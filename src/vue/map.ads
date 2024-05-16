@@ -9,13 +9,13 @@ package Map is
 
     type Point is
     record
-        x : Rows;
-        y : Cols;
+        x : Integer;
+        y : Integer;
     end record;
 
     type Maze_Map is tagged private;
 
-    procedure Modify (M : in out Maze_Map; coords : Point; Part : String); -- a externaliser autre par dans le modèle
+    procedure Modify (M : in out Maze_Map; coords : Point; Part : String);
     procedure Show (M : Maze_Map);
 
 private

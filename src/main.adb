@@ -1,14 +1,15 @@
 with Ada.Text_IO; use Ada.Text_IO;
 
-with Unicode;       use Unicode;
-with Map;           use Map;
-with Probabilities; use Probabilities;
-with FourTree;      use FourTree;
+with controller; use controller;
+with FourTree;   use FourTree;
 
 procedure main is
 
+    R : Acc_Node := new Node;
 begin
 
-    Put ("hey");
+    R.Set_Direction ('B');
+    R.Set_Coords ((1, 5), (0, 0));
+    Generate_Random_Map (R);
 
 end main;

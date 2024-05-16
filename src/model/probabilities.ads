@@ -3,7 +3,8 @@ with Ada.Numerics.Discrete_Random;
 package Probabilities is
 
     type Path_Embranchments is new Natural range 0 .. 3;
-    package Random_Embranchment is new Ada.Numerics.Discrete_Random (Path_Embranchments);
+    package Random_Embranchment is new
+        Ada.Numerics.Discrete_Random (Path_Embranchments);
     use Random_Embranchment;
 
     -- for Now uniform, but later one will be like the following :
