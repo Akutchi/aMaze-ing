@@ -10,7 +10,7 @@ package body FourTree is
         return N.Direction;
     end Get_Direction;
 
-    function Get_Embranchments (N : Node) return DirectionList is
+    function Get_Embranchments (N : Node) return NodeList.Vector is
     begin
         return N.Embranchments;
     end Get_Embranchments;
@@ -31,7 +31,7 @@ package body FourTree is
         N.Direction := D;
     end Set_Direction;
 
-    procedure Set_Embranchments (N : in out Node; L : DirectionList) is
+    procedure Set_Embranchments (N : in out Node; L : NodeList.Vector) is
     begin
         N.Embranchments := L;
     end Set_Embranchments;

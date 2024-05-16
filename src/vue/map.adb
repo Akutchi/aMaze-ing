@@ -4,11 +4,14 @@ package body Map is
 
     procedure Modify (M : in out Maze_Map; Coords : Point; Part : String) is
 
-        X : Rows := Rows (coords.x);
-        Y : Cols := Cols (coords.y);
+        -- there is a need for translation because what is seen as (x, y) in the
+        -- model is (y, x) in the vue.
+        X : Cols := Cols (coords.x);
+        Y : Rows := Rows (coords.y);
+
     begin
 
-        M.Representation (X, Y) := Part;
+        M.Representation (Y, X) := Part;
 
     end Modify;
 

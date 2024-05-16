@@ -53,16 +53,18 @@ package body controller is
 
         Coords : Point := Root.Get_Coordinates;
 
-        Number_Of_Embranchments : Path_Embranchments :=
-                    Draw_Random;
+        Number_Of_Embranchments : Path_Embranchments := Draw_Random_Path_Number;
 
-        Embranchments_List : DirectionList := (null, null, null, null);
+        Direction_List : Direction_Vector.Vector :=
+            Draw_Random_Directions (Number_Of_Embranchments);
+
+        Embranchments_List : NodeList.Vector;
 
     begin
 
         if Is_In_Map (Coords) and not Is_Finished (Number_Of_Embranchments) then
 
-                for I in 1 .. Number_Of_Embranchments loop
+                for I of Direction_List loop
 
                     declare
                         Idx          : Integer := Integer (I);
@@ -73,7 +75,7 @@ package body controller is
                         T.Set_Coords (Coords, Displacement);
                         Generate_Random_Map (T);
 
-                        Embranchments_List (Idx) := T;
+                        Embranchments_List.Append (T);
 
                     end;
 
@@ -85,11 +87,79 @@ package body controller is
 
     end Generate_Random_Map;
 
-
-    procedure Update_Map (M : in out Maze_Map) is
+    function Cumulative_Direction_To_Unicode (C_Dir : String;
+                                              Nb_Path : Path_Embranchments;
+                                              Translation_Table : Cumulative_Direction_Table.Map)
+    return String is
     begin
 
-        null;
+        if Nb_Path = 0 then
+            return ".";
+
+        elsif Nb_Path = 3 then
+            return "╬";
+        end if;
+
+        return Translation_Table (C_Dir);
+
+    end Cumulative_Direction_To_Unicode;
+
+    function Get_CD (Root : Acc_Node; Nb_Path : Path_Embranchments)
+    return String is
+
+        Next_Cumulative_Direction : String (1 .. 3);
+        Embranchments_List : NodeList.Vector := Root.Get_Embranchments;
+    begin
+
+        if Nb_Path = 1 then
+            Next_Cumulative_Direction :=
+                Root.Get_Direction &
+                Embranchments_List (1).all.Get_Direction'Image & " ";
+
+        else
+            Next_Cumulative_Direction (1) := Root.Get_Direction;
+            for I in 2 .. Nb_Path loop
+                Next_Cumulative_Direction (Integer (I)) :=
+                    Embranchments_List (Integer (I)).all.Get_Direction;
+            end loop;
+
+        end if;
+
+        return Next_Cumulative_Direction;
+
+    end Get_CD;
+
+    procedure Update_Map (Map : in out Maze_Map;
+                          Root : Acc_Node;
+                          Cumulative_Direction : String;
+                          Translation_Table : Cumulative_Direction_Table.Map) is
+
+        Nb_Path : Path_Embranchments :=
+            Path_Embranchments (Root.Get_Embranchments.Length);
+    begin
+
+        if Root /= null then
+
+            -- first direction is guaranted ║ which is easier to create the
+            -- cumulative_direction
+            Modify (M => Map,
+                    coords => Root.Get_Coordinates,
+                    Part => Cumulative_Direction_To_Unicode
+                                (Cumulative_Direction, Nb_Path, Translation_Table));
+
+            for E of Root.Get_Embranchments loop
+
+                -- not optimised. It will Modify (uselessly) the part for every
+                -- embranchments
+                declare
+                    Next_Cumulative_Direction : String (1 .. 3) :=
+                        Get_CD (Root, Nb_Path);
+                begin
+                    Update_Map (Map, E, Cumulative_Direction, Translation_Table);
+                end;
+            end loop;
+
+        end if;
 
     end Update_Map;
 
