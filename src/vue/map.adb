@@ -2,6 +2,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body Map is
 
+    ------------
+    -- Modify --
+    ------------
+
     procedure Modify (M : in out Maze_Map; Coords : Point; Part : String) is
 
         -- there is a need for translation because what is seen as (x, y) in the
@@ -12,9 +16,12 @@ package body Map is
     begin
 
         M.Representation (Y, X) := Part;
-        null;
 
     end Modify;
+
+    ----------
+    -- Show --
+    ----------
 
     procedure Show (M : Maze_Map) is
     begin

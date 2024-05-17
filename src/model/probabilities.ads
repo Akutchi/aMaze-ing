@@ -1,4 +1,4 @@
-with Ada.Numerics.Float_Random;
+with Ada.Numerics.Float_Random; use Ada.Numerics.Float_Random;
 with Ada.Numerics.Discrete_Random;
 with Ada.Containers.Vectors;
 
@@ -11,39 +11,37 @@ package Probabilities is
 
     package Direction_Vector is new Ada.Containers.Vectors
       (Index_Type   => Positive,
-       Element_Type => Positive);
+       Element_Type => Directions);
     use Direction_Vector;
 
-    package Random_Direction is new
-        Ada.Numerics.Discrete_Random (Directions);
-
-    -- the PDF is
-    --  1
-    -- .9
-    -- .8
-    -- .7
-    -- .6
-    -- .5        -
-    -- .4        -
-    -- .3   -    -
-    -- .2   -    -
-    -- .1   -    -    -    -
-    -- ---  0 -- 1 -- 2 -- 3 --
-    ---------------------------
-
-    -- the CDF is
+    -- the CDF (for path) is
     --  1                 -----
-    -- .9            -----
-    -- .8      ------
-    -- .7      |
-    -- .6      |
-    -- .5      |
+    -- .9           ------
+    -- .8           |
+    -- .7           |
+    -- .6           |
+    -- .5      ------
     -- .4      |
-    -- .3 ------
-    -- .2
-    -- .1
+    -- .3      |
+    -- .2      |
+    -- .1 ------
     -- .0
     --    0 -- 1 -- 2 -- 3 -- 4
+    ---------------------------
+
+        -- the CDF (for direction) is
+    --  1                ------
+    -- .9                |
+    -- .8                |
+    -- .7                |
+    -- .6                |
+    -- .5          -------
+    -- .4          |
+    -- .3      -----
+    -- .2      |
+    -- .1 ------
+    -- .0
+    --    0 -- U -- L -- R -- D
     ---------------------------
 
     function Draw_Random_Path_Number return Path_Embranchments;
@@ -53,8 +51,11 @@ package Probabilities is
 
 private
 
-    function Inverse_CDF (U : Ada.Numerics.Float_Random.Uniformly_Distributed)
+    function Path_Inverse_CDF (U : Uniformly_Distributed)
     return Path_Embranchments;
+
+    function Direction_Inverse_CDF (U : Uniformly_Distributed)
+    return Directions;
 
 
 end Probabilities;

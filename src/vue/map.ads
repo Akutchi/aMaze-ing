@@ -26,9 +26,9 @@ private
     tagged record
 
         Representation : Display := (
-            1       => (1 => UCL,   20 => UCR,   others => HB),
-            10      => (1 => LCL,   20 => LCR,   others => HB),
-            others  => (1 => VB,    20 => VB,    others => CR));
+            1       => (1 => UCL,   10 => CR,   20 => UCR,  others => HB),
+            10      => (1 => LCL,   20 => LCR,              others => HB),
+            others  => (1 => VB,    20 => VB,               others => PE));
 
     end record;
 

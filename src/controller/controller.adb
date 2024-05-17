@@ -2,6 +2,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package body controller is
 
+    ----------------------------
+    -- Calculate_Displacement --
+    ----------------------------
+
     function Calculate_Displacement (Index : Integer) return Point is
     begin
 
@@ -17,6 +21,10 @@ package body controller is
 
     end Calculate_Displacement;
 
+    ----------------------
+    -- Int_To_Direction --
+    ----------------------
+
     function Int_To_Direction (Number : Integer) return Character is
     begin
 
@@ -31,6 +39,10 @@ package body controller is
         end case;
     end Int_To_Direction;
 
+    ---------------
+    -- Is_In_Map --
+    ---------------
+
     function Is_In_Map (Coords : Point) return Boolean is
 
         Is_In_X : Boolean := Coords.x >= Integer (Rows'First) and
@@ -44,10 +56,27 @@ package body controller is
 
     end Is_In_Map;
 
+    -----------------
+    -- Is_Finished --
+    -----------------
+
     function Is_Finished (Number : Path_Embranchments) return Boolean is
     begin
         return Number = 0;
     end Is_Finished;
+
+    -----------------------
+    -- Is_Not_Going_Back --
+    -----------------------
+
+    function Is_Not_Going_Back (Idx : Integer; Root : Acc_Node) return Boolean is
+    begin
+        return Int_To_Direction (Idx) /= Root.Get_Direction;
+    end Is_Not_Going_Back;
+
+    -------------------------
+    -- Generate_Random_Map --
+    -------------------------
 
     procedure Generate_Random_Map (Root : in out Acc_Node) is
 
@@ -62,7 +91,7 @@ package body controller is
 
     begin
 
-        if Is_In_Map (Coords) and not Is_Finished (Number_Of_Embranchments) then
+        if not Is_Finished (Number_Of_Embranchments) then
 
                 for I of Direction_List loop
 
@@ -71,14 +100,17 @@ package body controller is
                         T            : Acc_Node := new Node;
                         Displacement : Point := Calculate_Displacement (Integer (I));
                     begin
+
                         T.Set_Direction (Int_To_Direction (Idx));
-                        T.Set_Coords (Coords, Displacement);
-                        Generate_Random_Map (T);
+                        T.Set_Coordinates (Coords, Displacement);
 
-                        Embranchments_List.Append (T);
+                        if Is_Not_Going_Back (Idx, Root)
+                            and Is_In_Map (T.Get_Coordinates) then
 
+                            Generate_Random_Map (T);
+                            Embranchments_List.Append (T);
+                        end if;
                     end;
-
                 end loop;
 
                 Root.Set_Embranchments (Embranchments_List);
@@ -88,6 +120,10 @@ package body controller is
 
     end Generate_Random_Map;
 
+    -------------------------------------
+    -- Cumulative_Direction_To_Unicode --
+    -------------------------------------
+
     function Cumulative_Direction_To_Unicode (C_Dir : String;
                                               Nb_Path : Path_Embranchments;
                                               Translation_Table : Cumulative_Direction_Table.Map)
@@ -95,17 +131,22 @@ package body controller is
     begin
 
         if Nb_Path = 0 then
-            return ".";
+            return PE;
 
         elsif Nb_Path = 3 then
-            return "╬";
+            return CR;
         end if;
 
         return Translation_Table (C_Dir);
 
     end Cumulative_Direction_To_Unicode;
 
-    function Get_CD (Root : Acc_Node; Nb_Path : Path_Embranchments)
+    ------------------------------
+    -- Get_Cumulative_Direction --
+    ------------------------------
+
+    function Get_Cumulative_Direction (Root : Acc_Node;
+                                       Nb_Path : Path_Embranchments)
     return String is
 
         Next_Cumulative_Direction : String (1 .. 3);
@@ -127,7 +168,11 @@ package body controller is
 
         return Next_Cumulative_Direction;
 
-    end Get_CD;
+    end Get_Cumulative_Direction;
+
+    ----------------
+    -- Update_Map --
+    ----------------
 
     procedure Update_Map (Map : in out Maze_Map;
                           Root : Acc_Node;
@@ -136,16 +181,21 @@ package body controller is
 
         Nb_Path : Path_Embranchments :=
             Path_Embranchments (Root.Get_Embranchments.Length);
+
+        Part : String (1 .. Unicode_Lenght) :=
+            Cumulative_Direction_To_Unicode (Cumulative_Direction, Nb_Path,
+                                             Translation_Table);
+
+        Root_Coords : Point := Root.Get_Coordinates;
     begin
 
         if Root /= null then
 
-            -- first direction is guaranted ║ which is easier to create the
+            -- first direction is guaranted ╦ which is easier to create the
             -- cumulative_direction
             Modify (M => Map,
-                    coords => Root.Get_Coordinates,
-                    Part => Cumulative_Direction_To_Unicode
-                                (Cumulative_Direction, Nb_Path, Translation_Table));
+                    coords => Root_Coords,
+                    Part => (if Root_Coords = (10, 1) then CR else Part));
 
             for E of Root.Get_Embranchments loop
 
@@ -153,7 +203,7 @@ package body controller is
                 -- embranchments
                 declare
                     Next_Cumulative_Direction : String (1 .. Unicode_Lenght) :=
-                        Get_CD (Root, Nb_Path);
+                        Get_Cumulative_Direction (Root, Nb_Path);
                 begin
                     Update_Map (Map, E, Cumulative_Direction, Translation_Table);
                 end;

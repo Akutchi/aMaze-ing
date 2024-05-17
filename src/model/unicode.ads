@@ -20,6 +20,8 @@ package Unicode is
 
    CR : constant String := "╬";
 
+   PE : constant String := "•";
+
    Unicode_Lenght : constant Integer := WS'Length;
 
    function Equ_Keys(Left  : String;

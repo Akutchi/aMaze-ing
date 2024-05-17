@@ -17,11 +17,15 @@ private
     function Int_To_Direction       (Number : Integer) return Character;
     function Is_In_Map              (Coords : Point) return Boolean;
     function Is_Finished            (Number : Path_Embranchments) return Boolean;
+    function Is_Not_Going_Back (Idx : Integer; Root : Acc_Node) return Boolean;
+
     function Cumulative_Direction_To_Unicode (C_Dir : String;
                                               Nb_Path : Path_Embranchments;
                                               Translation_Table : Cumulative_Direction_Table.Map)
     return String;
-    function Get_CD (Root : Acc_Node; Nb_Path : Path_Embranchments)
+
+    function Get_Cumulative_Direction (Root : Acc_Node;
+                                       Nb_Path : Path_Embranchments)
     return String;
 
 
