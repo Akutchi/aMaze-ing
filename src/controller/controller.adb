@@ -22,11 +22,11 @@ package body controller is
 
         case Number is
 
-            when 1      => return 'H';
-            when 2      => return 'D';
-            when 3      => return 'B';
-            when 4      => return 'G';
-            when others => return 'H';
+            when 1      => return 'U';
+            when 2      => return 'R';
+            when 3      => return 'D';
+            when 4      => return 'L';
+            when others => return 'U';
 
         end case;
     end Int_To_Direction;
@@ -79,9 +79,10 @@ package body controller is
 
                     end;
 
-                    Root.Set_Embranchments (Embranchments_List);
-
                 end loop;
+
+                Root.Set_Embranchments (Embranchments_List);
+
 
         end if;
 
@@ -112,9 +113,8 @@ package body controller is
     begin
 
         if Nb_Path = 1 then
-            Next_Cumulative_Direction :=
-                Root.Get_Direction &
-                Embranchments_List (1).all.Get_Direction'Image & " ";
+            Next_Cumulative_Direction := Root.Get_Direction &
+                Embranchments_List (1).all.Get_Direction & ' ';
 
         else
             Next_Cumulative_Direction (1) := Root.Get_Direction;
@@ -152,7 +152,7 @@ package body controller is
                 -- not optimised. It will Modify (uselessly) the part for every
                 -- embranchments
                 declare
-                    Next_Cumulative_Direction : String (1 .. 3) :=
+                    Next_Cumulative_Direction : String (1 .. Unicode_Lenght) :=
                         Get_CD (Root, Nb_Path);
                 begin
                     Update_Map (Map, E, Cumulative_Direction, Translation_Table);

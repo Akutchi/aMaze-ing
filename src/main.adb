@@ -5,6 +5,8 @@ with FourTree;      use FourTree;
 with Map;           use Map;
 with Unicode;       use Unicode;
 
+with Probabilities; use Probabilities;
+
 procedure main is
 
     R   : Acc_Node := new Node;
@@ -12,7 +14,7 @@ procedure main is
     Translation_Table : Cumulative_Direction_Table.Map := Init_Map;
 begin
 
-    R.Set_Direction ('B');
+    R.Set_Direction ('D');
     R.Set_Coords ((5, 1), (0, 0));
     Generate_Random_Map (R);
 

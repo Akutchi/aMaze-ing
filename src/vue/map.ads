@@ -1,4 +1,4 @@
-with Unicode;
+with Unicode; use Unicode;
 
 package Map is
 
@@ -20,15 +20,15 @@ package Map is
 
 private
 
-    type Display is array (Rows, Cols) of String (1 .. Unicode.UCL'Length);
+    type Display is array (Rows, Cols) of String (1 .. Unicode_Lenght);
 
     type Maze_Map is
     tagged record
 
         Representation : Display := (
-            1       => (1 => Unicode.UCL,   20 => Unicode.UCR,   others => Unicode.HB),
-            10      => (1 => Unicode.LCL,   20 => Unicode.LCR,   others => Unicode.HB),
-            others  => (1 => Unicode.VB,    20 => Unicode.VB,    others => Unicode.CR));
+            1       => (1 => UCL,   20 => UCR,   others => HB),
+            10      => (1 => LCL,   20 => LCR,   others => HB),
+            others  => (1 => VB,    20 => VB,    others => CR));
 
     end record;
 

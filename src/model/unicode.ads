@@ -5,32 +5,34 @@ package Unicode is
 
    WS : constant String := "─";
 
-    HB : constant String := "═";
-    VB : constant String := "║";
+   HB : constant String := "═";
+   VB : constant String := "║";
 
-    UCL : constant String := "╔";
-    UCR : constant String := "╗";
-    LCL : constant String := "╚";
-    LCR : constant String := "╝";
+   UCL : constant String := "╔";
+   UCR : constant String := "╗";
+   LCL : constant String := "╚";
+   LCR : constant String := "╝";
 
-    TL : constant String := "╣";
-    TR : constant String := "╠";
-    TU : constant String := "╩";
-    TD : constant String := "╦";
+   TL : constant String := "╣";
+   TR : constant String := "╠";
+   TU : constant String := "╩";
+   TD : constant String := "╦";
 
-    CR : constant String := "╬";
+   CR : constant String := "╬";
 
-    function Equ_Keys(Left  : String;
-                      Right : String)
-                      return Boolean;
+   Unicode_Lenght : constant Integer := WS'Length;
 
-    package Cumulative_Direction_Table is new Ada.Containers.Indefinite_Hashed_Maps
-      (Key_Type        => String,
-       Element_Type    => String,
-       Hash => Ada.Strings.Hash,
-       Equivalent_Keys => Equ_Keys);
-    use Cumulative_Direction_Table;
+   function Equ_Keys(Left  : String;
+                     Right : String)
+                     return Boolean;
 
-    function Init_Map return Cumulative_Direction_Table.Map;
+   package Cumulative_Direction_Table is new Ada.Containers.Indefinite_Hashed_Maps
+   (Key_Type        => String,
+      Element_Type    => String,
+      Hash => Ada.Strings.Hash,
+      Equivalent_Keys => Equ_Keys);
+   use Cumulative_Direction_Table;
+
+   function Init_Map return Cumulative_Direction_Table.Map;
 
 end Unicode;

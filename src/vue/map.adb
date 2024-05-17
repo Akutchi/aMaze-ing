@@ -12,6 +12,7 @@ package body Map is
     begin
 
         M.Representation (Y, X) := Part;
+        null;
 
     end Modify;
 

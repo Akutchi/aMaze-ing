@@ -1,14 +1,39 @@
 package body Probabilities is
 
+
+    function Inverse_CDF (U : Ada.Numerics.Float_Random.Uniformly_Distributed)
+    return Path_Embranchments is
+
+        Uf : Float := Float (U);
+    begin
+
+        if Uf >= 0.0 and Uf < 0.3 then
+            return 0;
+
+        elsif Uf >= 0.3 and Uf < 0.8 then
+            return 1;
+
+        elsif Uf >= 0.8 and Uf < 0.9 then
+            return 2;
+
+        else
+            return 3;
+
+        end if;
+
+    end Inverse_CDF;
+
     function Draw_Random_Path_Number return Path_Embranchments is
 
-        G : Random_Embranchment.Generator;
+        G : Ada.Numerics.Float_Random.Generator;
+        U : Ada.Numerics.Float_Random.Uniformly_Distributed;
 
     begin
 
-        Random_Embranchment.Reset (G);
+        Ada.Numerics.Float_Random.Reset (G);
+        U := Ada.Numerics.Float_Random.Random (G);
 
-        return Random_Embranchment.Random (G);
+        return Inverse_CDF (U);
 
     end Draw_Random_Path_Number;
 
